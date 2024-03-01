@@ -18,6 +18,7 @@ export default {
 
 		const listDishes = computed(() => store.state.global.listDishes);
 		const listOrder = computed(() => store.state.global.listOrder);
+		const idDishes = computed(() => store.state.global.idDishes);
 		const dishSelectedStore = computed(
 			() => store.state.global.dishSelected
 		);
@@ -26,7 +27,12 @@ export default {
 			store.commit('global/SET_LIST_ORDER', payload);
 		};
 
+		const SET_ID_DISHES = (payload) => {
+			store.commit('global/SET_ID_DISHES', payload);
+		};
+
 		onMounted(() => {
+			index = idDishes.value;
 			if (listOrder.value.length > 0) {
 				dishes.value = listOrder.value;
 			} else {
@@ -44,12 +50,30 @@ export default {
 
 			dishSelected.value = dishSelectedStore.value;
 
+			const dishNotServing = dishes.value.filter(
+				(dish) => dish.servings === 0
+			);
+			dishSelected.value = dishSelected.value.filter((dish) => {
+				if (
+					!dishNotServing.find(
+						(item) => item.selectedDish === dish.name
+					)
+				) {
+					return dish;
+				}
+			});
+			store.commit('global/SET_DISH_SELECTED', dishSelected.value);
+
+			updateOptionDish()
+
 			// filter list not selected
 			optionDish.value = listDishes.value.filter((item1) => {
-					if (!dishSelected.value.find((value) => value.name === item1.name)) {
-						return item1
-					}
-			})
+				if (
+					!dishSelected.value.find((value) => value.name === item1.name)
+				) {
+					return item1;
+				}
+			});
 
 		});
 
@@ -76,6 +100,7 @@ export default {
 				return;
 			}
 			index++;
+			SET_ID_DISHES(index);
 			dishes.value.push({
 				id: index,
 				list: optionDish.value,
@@ -94,16 +119,33 @@ export default {
 			if (nameDish !== dishSelected.value[id - 1].name) {
 				dishSelected.value[id - 1].name = nameDish;
 			}
+
 			store.commit('global/SET_DISH_SELECTED', dishSelected.value);
 
 
 
 			// update list option dishes
+			updateOptionDish()
+
+			// filter list not choose
+			optionDish.value = listDishes.value.filter((item1) => {
+				if (
+					!dishSelected.value.find((value) => value.name === item1.name)
+				) {
+					return item1;
+				}
+			});
+			
+
+			SET_LIST_ORDER(dishes.value);
+		};
+
+		const updateOptionDish = () => {
 			dishes.value = dishes.value.map((value) => {
-				value.list = value.list.filter((item1) => {
+				value.list = listDishes.value.filter((item1) => {
 					if (
 						!dishSelected.value.find(
-							(value) => value.name === item1.name
+							(item2) => item2.name === item1.name
 						) ||
 						value.selectedDish === item1.name
 					) {
@@ -113,13 +155,7 @@ export default {
 
 				return value;
 			});
-
-			optionDish.value = optionDish.value.filter(
-				(option) => option.name != dishSelected.value[id - 1].name
-			);
-
-			SET_LIST_ORDER(dishes.value);
-		};
+		}
 
 		return {
 			dishes,

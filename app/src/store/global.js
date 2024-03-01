@@ -10,6 +10,7 @@ export default {
 			numberPeople: 1,
 			selectedRestaurant: '',
 			listOrder: [],
+			idDishes: 1,
 
 			restaurants: [],
 			listDishes: [],
@@ -40,11 +41,12 @@ export default {
 			state.restaurants = arr;
 		},
 
-		async getDish({ state }) {
+		async getDish({ dispatch, state }) {
+			// handle dishes when servuring = 0
+			dispatch('handleNotServuring')
+
 			if (
-				state.checkInfoChange.meal != state.meal ||
-				state.checkInfoChange.selectedRestaurant !=
-					state.selectedRestaurant
+				state.checkInfoChange.meal != state.meal || state.checkInfoChange.selectedRestaurant !=state.selectedRestaurant
 			) {
 				state.listOrder = [];
 				state.checkInfoChange = {
@@ -60,14 +62,26 @@ export default {
 			);
 
 			state.listDishes = listDish;
-
-
 		},
 
+		async getReview({ dispatch }) {
+			dispatch('handleNotServuring')
+		},
 
-		async getReview({ state }) {
-			state.dishSelected = state.dishSelected.filter((dish)=>!state.listOrder.find((item)=>item.selectedDish ===dish.name && item.servings === 0 ))
-			state.listOrder = state.listOrder.filter((item) => item.servings > 0)
+		handleNotServuring({ state }) {
+			state.dishSelected = state.dishSelected.filter(
+				(dish) =>!state.listOrder.find((item) =>item.selectedDish === dish.name && item.servings === 0
+					)
+			);
+			state.idDishes = state.dishSelected.length;
+			state.listOrder = state.listOrder.filter(
+				(item) => item.servings > 0
+			);
+			state.listOrder = state.listOrder.map((value, idx) => {
+				value.id = idx + 1
+				return value
+				
+			})
 			
 		}
 	},
@@ -87,6 +101,9 @@ export default {
 
 		SET_DISH_SELECTED(state, payload) {
 			state.dishSelected = payload;
+		},
+		SET_ID_DISHES(state, payload) {
+			state.idDishes = payload;
 		},
 	},
 
