@@ -33,7 +33,7 @@
 					>
 					<input
 						type="number"
-						min="1"
+						min="0"
 						max="10"
 						class="border flex-1 pl-4 w-[150px] h-[25px]"
 						v-model="dish.servings"
