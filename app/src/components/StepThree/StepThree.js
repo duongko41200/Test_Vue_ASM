@@ -64,7 +64,7 @@ export default {
 			});
 			store.commit('global/SET_DISH_SELECTED', dishSelected.value);
 
-			updateOptionDish()
+			updateOptionDish();
 
 			// filter list not selected
 			optionDish.value = listDishes.value.filter((item1) => {
@@ -75,6 +75,7 @@ export default {
 				}
 			});
 
+			console.log('optionDish.value;', optionDish.value);
 		});
 
 		const addDish = () => {
@@ -108,24 +109,21 @@ export default {
 				servings: 1,
 			});
 
-			
 			dishSelected.value = [...dishSelected.value, { name: '' }];
 			store.commit('global/SET_DISH_SELECTED', dishSelected.value);
 			SET_LIST_ORDER(dishes.value);
 		};
 
 		const getDataDish = (id, nameDish) => {
-
+			console.log('dishSelected.value', dishSelected.value);
 			if (nameDish !== dishSelected.value[id - 1].name) {
 				dishSelected.value[id - 1].name = nameDish;
 			}
 
 			store.commit('global/SET_DISH_SELECTED', dishSelected.value);
 
-
-
 			// update list option dishes
-			updateOptionDish()
+			updateOptionDish();
 
 			// filter list not choose
 			optionDish.value = listDishes.value.filter((item1) => {
@@ -135,8 +133,8 @@ export default {
 					return item1;
 				}
 			});
-			
 
+			console.log('optionDish.value;', optionDish.value);
 			SET_LIST_ORDER(dishes.value);
 		};
 
@@ -155,7 +153,7 @@ export default {
 
 				return value;
 			});
-		}
+		};
 
 		return {
 			dishes,

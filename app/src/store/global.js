@@ -49,6 +49,7 @@ export default {
 				state.checkInfoChange.meal != state.meal || state.checkInfoChange.selectedRestaurant !=state.selectedRestaurant
 			) {
 				state.listOrder = [];
+				state.dishSelected=[{ name: '' }]
 				state.checkInfoChange = {
 					meal: state.meal,
 					selectedRestaurant: state.selectedRestaurant,
@@ -70,9 +71,12 @@ export default {
 
 		handleNotServuring({ state }) {
 			state.dishSelected = state.dishSelected.filter(
-				(dish) =>!state.listOrder.find((item) =>item.selectedDish === dish.name && item.servings === 0
-					)
+				(dish) =>!state.listOrder.find((item) =>item.selectedDish === dish.name && item.servings === 0)
 			);
+
+			if (!state.dishSelected.length) {
+				state.dishSelected=[{ name: '' }]
+			}
 			state.idDishes = state.dishSelected.length;
 			state.listOrder = state.listOrder.filter(
 				(item) => item.servings > 0
