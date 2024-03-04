@@ -110,12 +110,15 @@ export default {
 			});
 
 			dishSelected.value = [...dishSelected.value, { name: '' }];
+			// console.log('dishSelected.value', dishSelected.value);
+			// console.log('dishes.value', dishes.value);
 			store.commit('global/SET_DISH_SELECTED', dishSelected.value);
 			SET_LIST_ORDER(dishes.value);
 		};
 
 		const getDataDish = (id, nameDish) => {
-			console.log('dishSelected.value', dishSelected.value);
+			// console.log('id.value', id);
+			// console.log('dishSelected.value', dishSelected.value);
 			if (nameDish !== dishSelected.value[id - 1].name) {
 				dishSelected.value[id - 1].name = nameDish;
 			}
